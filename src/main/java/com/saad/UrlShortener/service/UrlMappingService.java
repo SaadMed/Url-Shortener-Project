@@ -1,7 +1,7 @@
 package com.saad.UrlShortener.service;
 
-import com.saad.UrlShortener.model.UrlShortener;
-import com.saad.UrlShortener.repository.UrlShortenerRepository;
+import com.saad.UrlShortener.model.UrlMapping;
+import com.saad.UrlShortener.repository.UrlMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,30 +11,30 @@ import java.security.MessageDigest;
 import java.util.Base64;
 
 @Service
-public class UrlShortenerService {
+public class UrlMappingService {
 
     @Autowired
-    private UrlShortenerRepository urlShortenerRepository;
+    private UrlMappingRepository urlMappingRepository;
 
     public String generateShortenURL(String originalUrl) {
-        return urlShortenerRepository.findByOriginalUrl(originalUrl)
-                .map(UrlShortener::getShortenUrl)
+        return urlMappingRepository.findByOriginalUrl(originalUrl)
+                .map(UrlMapping::getShortenUrl)
                 .orElseGet(() -> {
                     String shortenUrl = generateShortenUrl(originalUrl);
 
-                    UrlShortener urlShortener = UrlShortener.builder()
+                    UrlMapping urlMapping = UrlMapping.builder()
                             .originalUrl(originalUrl)
                             .shortenUrl(shortenUrl)
                             .build();
 
-                    urlShortenerRepository.save(urlShortener);
+                    urlMappingRepository.save(urlMapping);
                     return shortenUrl;
                 });
     }
 
     public String getOriginalUrl(String shortenUrl) {
-        return urlShortenerRepository.findByShortenUrl(shortenUrl)
-                .map(UrlShortener::getOriginalUrl)
+        return urlMappingRepository.findByShortenUrl(shortenUrl)
+                .map(UrlMapping::getOriginalUrl)
                 .orElseThrow(() -> new RuntimeException("URL not found"));
     }
 
@@ -47,8 +47,7 @@ public class UrlShortenerService {
             String shortCode = Base64.getUrlEncoder()
                     .withoutPadding()
                     .encodeToString(hash)
-                    .substring(0, 10)
-                    .toLowerCase();
+                    .substring(0, 10);
 
             // Extract domain from originalUrl
             URL url = new URL(originalUrl);

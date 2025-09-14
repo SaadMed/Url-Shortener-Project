@@ -1,7 +1,7 @@
 package com.saad.UrlShortener.controller;
 
 
-import com.saad.UrlShortener.service.UrlShortenerService;
+import com.saad.UrlShortener.service.UrlMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/api")
-public class UrlShortenerController {
+@RequestMapping("/api/urls")
+public class UrlMappingController {
 
     @Autowired
-    private UrlShortenerService urlShortenerService;
+    private UrlMappingService urlMappingService;
 
     @PostMapping("/generateShortenUrl")
     public String generateShortenUrl(@RequestBody String originalUrl) {
-        return urlShortenerService.generateShortenURL(originalUrl);
+        return urlMappingService.generateShortenURL(originalUrl);
     }
 
     @PostMapping("/provideOrginalUrl")
     public String getOriginalUrl(@RequestBody String shortenUrl) {
-        return urlShortenerService.getOriginalUrl(shortenUrl);
+        return urlMappingService.getOriginalUrl(shortenUrl);
     }
 }
